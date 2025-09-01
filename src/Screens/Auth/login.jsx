@@ -38,9 +38,8 @@ const AuthLogin = () => {
       }
       if (response?.data?.data.role === "admin") {
         // Redirect to admin dashboard
-        window.location.href = "/admin/dashboard";
-      }
-      else if (response?.data?.data.role === "cashier") {
+        window.location.href = "/admin/admin-dashboard";
+      } else if (response?.data?.data.role === "cashier") {
         // Redirect to employee dashboard
 
         window.location.href = "/employee/dashboard";
@@ -58,7 +57,7 @@ const AuthLogin = () => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        bgcolor: "#f4f6f8",
+        bgcolor: "#001f3f",
       }}
     >
       <Paper
@@ -68,6 +67,8 @@ const AuthLogin = () => {
           width: "100%",
           p: 4,
           borderRadius: 3,
+          bgcolor: "#ffffff5a",
+          color: "#000000",
         }}
       >
         <Typography

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use, useEffect, useState } from "react";
 import { Grid, Paper, Typography, Box } from "@mui/material";
 import {
   LineChart,
@@ -14,9 +14,24 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { ShoppingCart, AttachMoney, Store, People } from "@mui/icons-material";
+import { getSalesData, getWeeklySales } from "../../Services/getOrders";
 
 const AdminDashboard = () => {
   // Example stats
+  const [salesData, setSalesData] = useState([]);
+  const [categoryData, setCategoryData] = useState([]);
+  useEffect(() => {
+    // Fetch sales data from API or other source
+    const fetchSalesData = async () => {
+      const response = await getWeeklySales();
+      const categoryResponse = await getSalesData();
+      setCategoryData(categoryResponse.data);
+      setSalesData(response.data);
+    };
+
+    fetchSalesData();
+  }, []);
+
   const stats = [
     {
       title: "Total Sales",
@@ -40,24 +55,7 @@ const AdminDashboard = () => {
     },
   ];
 
-  // Example sales data
-  const salesData = [
-    { name: "Mon", sales: 400 },
-    { name: "Tue", sales: 300 },
-    { name: "Wed", sales: 500 },
-    { name: "Thu", sales: 700 },
-    { name: "Fri", sales: 600 },
-    { name: "Sat", sales: 800 },
-    { name: "Sun", sales: 650 },
-  ];
-
   // Example category data
-  const categoryData = [
-    { name: "Bread", value: 400 },
-    { name: "Pastries", value: 300 },
-    { name: "Cakes", value: 300 },
-    { name: "Drinks", value: 200 },
-  ];
 
   const COLORS = ["#FFBB28", "#FF8042", "#00C49F", "#0088FE"];
 
@@ -116,7 +114,7 @@ const AdminDashboard = () => {
             <ResponsiveContainer width="100%" height="90%">
               <LineChart data={salesData}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
+                <XAxis dataKey="day" />
                 <YAxis />
                 <Tooltip />
                 <Legend />

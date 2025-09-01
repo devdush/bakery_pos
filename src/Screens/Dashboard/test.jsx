@@ -297,7 +297,6 @@ const TestComponent = () => {
                     };
                     try {
                       const response = await createOrder(obj);
-                      console.log("Order created successfully:", response);
                       setLastPaymentMethod(values.paymentMethod);
                       toast.success("Order created successfully!");
                       handlePrint();
