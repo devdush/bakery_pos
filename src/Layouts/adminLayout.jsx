@@ -36,6 +36,11 @@ const NAVIGATION = [
     icon: <AssessmentIcon />,
   },
   {
+    segment: "admin/kot",
+    title: "KOT",
+    icon: <AssessmentIcon />,
+  },
+  {
     segment: "admin/logout",
     title: "Logout",
     icon: <LogoutIcon />,

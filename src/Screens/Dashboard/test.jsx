@@ -95,6 +95,7 @@ const TestComponent = () => {
         {categories?.map((cat) => (
           <ListItem
             button
+            sx={{ bgcolor: cat._id === selectedCategory ? "#a7fff888" : "transparent",cursor:"pointer" }}
             key={cat._id}
             selected={cat._id === selectedCategory}
             onClick={() => {

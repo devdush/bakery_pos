@@ -12,21 +12,40 @@ import {
   Pie,
   Cell,
   ResponsiveContainer,
+  BarChart,
+  Bar,
 } from "recharts";
 import { ShoppingCart, AttachMoney, Store, People } from "@mui/icons-material";
-import { getSalesData, getWeeklySales } from "../../Services/getOrders";
+import {
+  getDayByDayCategoryWiseSales,
+  getSalesData,
+  getTodayDetails,
+  getWeeklySales,
+} from "../../Services/getOrders";
 
 const AdminDashboard = () => {
   // Example stats
   const [salesData, setSalesData] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
+  const [todayDetails, setTodayDetails] = useState([]);
+  const [dayByDayCategoryWiseSales, setDayByDayCategoryWiseSales] = useState(
+    []
+  );
   useEffect(() => {
     // Fetch sales data from API or other source
     const fetchSalesData = async () => {
       const response = await getWeeklySales();
       const categoryResponse = await getSalesData();
+      const todayResponse = await getTodayDetails();
+      const dayByDayResponse = await getDayByDayCategoryWiseSales();
+      const formattedData = dayByDayResponse.data.map((item) => ({
+        ...item,
+        date: new Date(item.date).getDate(), // only show day number (1–31)
+      }));
+      setDayByDayCategoryWiseSales(formattedData);
       setCategoryData(categoryResponse.data);
       setSalesData(response.data);
+      setTodayDetails(todayResponse.data[0]);
     };
 
     fetchSalesData();
@@ -35,22 +54,22 @@ const AdminDashboard = () => {
   const stats = [
     {
       title: "Total Sales",
-      value: "Rs. 120,500",
+      value: todayDetails.totalSales,
       icon: <AttachMoney fontSize="large" sx={{ color: "green" }} />,
     },
     {
       title: "Orders Today",
-      value: "56",
+      value: todayDetails.totalOrders,
       icon: <ShoppingCart fontSize="large" sx={{ color: "blue" }} />,
     },
     {
       title: "Products",
-      value: "120",
+      value: todayDetails.totalItems,
       icon: <Store fontSize="large" sx={{ color: "orange" }} />,
     },
     {
       title: "Cashiers",
-      value: "8",
+      value: "2",
       icon: <People fontSize="large" sx={{ color: "purple" }} />,
     },
   ];
@@ -62,7 +81,7 @@ const AdminDashboard = () => {
   return (
     <Box sx={{ p: 4, backgroundColor: "#f9fafb", minHeight: "100vh" }}>
       <Typography variant="h4" fontWeight="bold" gutterBottom>
-        Admin Dashboard
+        Today’s Overview
       </Typography>
 
       {/* Stat Circles */}
@@ -128,6 +147,34 @@ const AdminDashboard = () => {
             </ResponsiveContainer>
           </Paper>
         </Grid>
+        <Grid item xs={12} md={6}>
+          <Paper sx={{ p: 3, height: 400 }}>
+            <Typography variant="h6" fontWeight="bold" gutterBottom>
+              Monthly Category-wise Sales
+            </Typography>
+
+            {/* Scrollable horizontally */}
+            <Box sx={{ width: "100%", height: "90%", overflowX: "auto" }}>
+              <BarChart
+                width={dayByDayCategoryWiseSales.length * 100} // ~100px per day
+                height={350}
+                data={dayByDayCategoryWiseSales}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis /> {/* stays fixed, no scroll */}
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="Bread" fill="#82ca9d" />
+                <Bar dataKey="Cake" fill="#8884d8" />
+                <Bar dataKey="Pastries" fill="#ffc658" />
+                <Bar dataKey="Beverages" fill="#8dd1e1" />
+                <Bar dataKey="Savory Snacks" fill="#d0ed57" />
+                <Bar dataKey="Sandwiches & Rolls" fill="#a4de6c" />
+              </BarChart>
+            </Box>
+          </Paper>
+        </Grid>
 
         {/* Pie Chart */}
         <Grid item xs={12} md={6}>
@@ -143,7 +190,9 @@ const AdminDashboard = () => {
                   cy="50%"
                   outerRadius={120}
                   dataKey="value"
-                  label
+                  label={({ name, percent }) =>
+                    `${name} (${(percent * 100).toFixed(0)}%)`
+                  }
                 >
                   {categoryData.map((entry, index) => (
                     <Cell

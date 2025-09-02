@@ -43,6 +43,9 @@ const AuthLogin = () => {
         // Redirect to employee dashboard
 
         window.location.href = "/employee/dashboard";
+      } else if (response?.data?.data.role === "stuart") {
+        // Redirect to Stuart dashboard
+        window.location.href = "/stuart/admin-dashboard";
       }
       console.log("Login successful:", response);
     } catch (error) {

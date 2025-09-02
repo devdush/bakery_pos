@@ -11,6 +11,9 @@ import CreateCategory from "./Screens/Admin/create-category";
 import CreateProduct from "./Screens/Admin/create-product";
 import CreateUser from "./Screens/Admin/create-user";
 import ViewReports from "./Screens/Admin/view-reports";
+import StuartLayout from "./Layouts/stuartLayout";
+import StuartDashboard from "./Screens/Stuart";
+import KOT from "./Screens/Admin/KOT";
 
 function App() {
   return (
@@ -29,6 +32,10 @@ function App() {
           <Route path="create-product" element={<CreateProduct />} />
           <Route path="create-user" element={<CreateUser />} />
           <Route path="view-reports" element={<ViewReports />} />
+          <Route path="kot" element={<KOT />} />
+        </Route>
+        <Route path="/stuart" element={<StuartLayout />}>
+          <Route path="admin-dashboard" element={<StuartDashboard />} />
         </Route>
       </Routes>
     </div>
